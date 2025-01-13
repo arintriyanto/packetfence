@@ -422,6 +422,12 @@ sub getSourceArgs {
                 $args->{$accessor} = $field->duration_deflate($value);
             }
         }
+
+        if ($field->type eq 'ObfuscatedText') {
+            my $accessor = $field->accessor;
+            my $value = $args->{$accessor};
+            $args->{$accessor} = $field->inflate($value);
+        }
     }
 
     for my $r (qw(realms searchattributes sources local_realm reject_realm eduroam_radius_auth)) {
