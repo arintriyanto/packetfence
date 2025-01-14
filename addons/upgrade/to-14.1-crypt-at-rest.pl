@@ -58,9 +58,9 @@ sub update_config_controller {
     for my $section ($ini->Sections()) {
         for my $param ($ini->Parameters($section)) {
             next if (!exists $fields2Encrypt{$param});
-            print "Changing $section.$param\n";
             my $val = $ini->val($section, $param);
             next if length($val) == 0;
+            print "Changing $section.$param\n";
             $val = pf::config::crypt::pf_encrypt($val);
             $ini->setval($section, $param, $val);
             $changed |= 1;
