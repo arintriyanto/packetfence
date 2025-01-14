@@ -22,7 +22,7 @@ use Module::Pluggable
   'require'     => 1,
   'inner'       => 0,
   ;
-
+$pf::db::NO_DIE_ON_DBH_ERROR = 1;
 for my $name (__PACKAGE__->_all_config) {
     if ($name eq "pf::UnifiedApi::Controller::Config::Subtype" || !$name->isa("pf::UnifiedApi::Controller::Config")) {
         next;
