@@ -19,6 +19,7 @@ use base ('pf::Switch::Ruckus::SmartZone');
 
 use pf::constants;
 use pf::util;
+use pf::util::wpa;
 use pf::node;
 use pf::config qw (
     $WEBAUTH_WIRELESS
@@ -91,6 +92,48 @@ sub getAcceptForm {
     $logger->debug("Generated the following html form : ".$html_form);
     return $html_form;
 }
+sub find_user_by_psk {
+    my ($self, $radius_request, $args) = @_;
+    my $pid;
+    if($radius_request->{"Ruckus-DPSK-Cipher"} != 4) {
+        get_logger->error("Ruckus-DPSK-Cipher isn't for WPA2 that uses AES and HMAC-SHA1. This isn't supported by this module.");
+        return $pid;
+    }
+
+    my $ssid = $radius_request->{'Ruckus-SSID'};
+    my $bssid = pack("H*", sprintf("%v02x", $radius_request->{"Ruckus-BSSID"}) =~ s/\.//rg);
+    my $username = pack("H*", $radius_request->{'User-Name'});
+    my $anonce = pack('H*', sprintf("%v02x",$radius_request->{'Ruckus-DPSK-Anonce'}) =~ s/\.//rg);
+    my $snonce = pf::util::wpa::snonce_from_eapol_key_frame(pack("H*",sprintf("%v02x",$radius_request->{"Ruckus-DPSK-EAPOL-Key-Frame"}) =~ s/\.//rg));
+    my $eapol_key_frame = pack("H*", sprintf("%v02x",$radius_request->{"Ruckus-DPSK-EAPOL-Key-Frame"}) =~ s/\.//rg);
+    my $cache = $self->cache;
+    # Try first the pid of the mac address
+    if (exists $args->{'owner'} && $args->{'owner'}->{'pid'} ne "" && exists $args->{'owner'}->{'psk'} && defined $args->{'owner'}->{'psk'} && $args->{'owner'}->{'psk'} ne "") {
+        if (check_if_radius_request_psk_matches($cache, $radius_request, $args->{'owner'}->{'psk'}, $ssid, $bssid, $username, $anonce, $snonce, $eapol_key_frame)) {
+            get_logger->info("PSK matches the pid associated with the mac ".$args->{'owner'}->{'pid'});
+            return $args->{'owner'}->{'pid'};
+        }
+    }
+
+    my ($status, $iter) = pf::dal::person->search(
+        -where => {
+            psk => {'!=' => [-and => '', undef]},
+        },
+        -columns => [qw(pid psk)],
+        -no_default_join => 1,
+    );
+
+    while (my $person = $iter->next) {
+        get_logger->debug("User ".$person->{pid}." has a PSK. Checking if it matches the one in the packet");
+        if (check_if_radius_request_psk_matches($cache, $radius_request, $person->{psk}, $ssid, $bssid, $username, $anonce, $snonce, $eapol_key_frame)) {
+            get_logger->info("PSK matches the one of ".$person->{pid});
+            $pid = $person->{pid};
+            last;
+        }
+    }
+    return $pid;
+}
+
 
 =back
 
