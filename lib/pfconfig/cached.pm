@@ -40,6 +40,8 @@ use Time::HiRes qw(stat time);
 use pf::Sereal qw($DECODER);
 use pfconfig::config;
 use pf::config::crypt::object;
+use pf::config::crypt::string;
+use Scalar::Util qw(reftype);
 use bytes;
 
 our $LAST_TOUCH_CACHE = 0;
@@ -242,7 +244,28 @@ sub _get_from_socket {
         $result = undef;
     }
 
-    return $result;
+    return process_results($result);
+}
+
+sub process_results {
+    my ($data) = @_;
+    my $ref_type = ref($data);
+    return $data if !$ref_type;
+    return "$data" if ($ref_type eq 'pf::config::crypt::string');
+    $ref_type = reftype($data);
+    if ($ref_type eq 'HASH') {
+        while (my ($k,$v) = each %$data) {
+            $data->{$k} = process_results($v);
+        }
+        return $data;
+    }
+
+    if ($ref_type eq 'HASH') {
+        local $_;
+        return [map {process_results($_)} @$data ];
+    }
+
+    return $data;
 }
 
 =head2 is_valid
