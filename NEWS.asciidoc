@@ -71,6 +71,7 @@ For a list of compatibility related changes see the <<PacketFence_Upgrade_Guide.
  * Fix Fingerbank profile overwrite (#8468)
  * Clear person lookup cache after deleting a person (#8460)
  * Fix pfconnector TCP/UDP port allocation (#8446)
+ * PacketFence::SNMP cannot use SNMP to set vlan (unable to set VLAN on generic snmp switch #8486)
 
 === Security Fixes
 
