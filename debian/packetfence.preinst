@@ -120,7 +120,6 @@ case "$1" in
 
         usermod pf -a -G fingerbank
         usermod -aG pf mysql
-        usermod -aG pf netdata
 
         disable_service_if_exists packetfence-redis-cache.service
         disable_service_if_exists packetfence-config.service
