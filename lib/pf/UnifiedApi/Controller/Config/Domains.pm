@@ -35,6 +35,7 @@ use Encode qw(encode);
 use Net::DNS;
 use JSON;
 use pf::constants qw($TRUE $FALSE);
+use pf::config::crypt;
 
 my $host_id = hostname();
 
@@ -146,7 +147,7 @@ sub create {
     }
 
     my $bind_dn = $item->{bind_dn};
-    my $bind_pass = $item->{bind_pass};
+    my $bind_pass = pf::config::crypt::pf_decrypt($item->{bind_pass});
     my $computer_name = $item->{server_name};
     my $computer_password = $item->{machine_account_password};
     my $ad_fqdn = $item->{ad_fqdn};
