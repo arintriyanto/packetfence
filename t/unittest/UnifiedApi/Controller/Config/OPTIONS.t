@@ -99,6 +99,10 @@ $t->options_ok("/api/v1/config/event_handlers")
               value => "fortianalyser"
             },
             {
+              text => "fortigate_dhcp",
+              value => "fortigate_dhcp"
+            },
+            {
               text => "nexpose",
               value => "nexpose"
             },
