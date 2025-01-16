@@ -66,7 +66,7 @@ sub parseExternalPortalRequest {
         redirect_url            => $req->param('url'),
         switch_id               => $req->param('sip'),
         switch_mac              => clean_mac($req->param('mac')),
-	synchronize_locationlog => $TRUE,
+        synchronize_locationlog => $TRUE,
         connection_type         => $WEBAUTH_WIRELESS,
     );
 
