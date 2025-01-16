@@ -172,11 +172,12 @@ def _submit_machine_account_test_job(machine_accounts, password=""):
 
 
 def _poll_machine_account_test_job_results(job_id, machine_accounts):
-    exp_time = job_id + 2
+    exp_time = job_id + 15
     results = {}
 
     while time.time() < exp_time:
-        time.sleep(0.3)
+        time.sleep(0.5)
+        done = True
 
         for m in machine_accounts:
             if m in results and results[m]["status"] in ("OK", "Failed"):
@@ -188,6 +189,7 @@ def _poll_machine_account_test_job_results(job_id, machine_accounts):
                 res = redis_client.r.get(key)
 
                 if res is None:
+                    done = False
                     continue
 
                 if res == "OK":
@@ -200,8 +202,14 @@ def _poll_machine_account_test_job_results(job_id, machine_accounts):
 
             except redis.ConnectionError:
                 results[m] = {"status": "Exception", "reason": f"redis connection issue when fetching job result"}
+                done = False
             except Exception as e:
                 results[m] = {"status": "Exception", "reason": f"redis error '{str(e)}' when fetching job result"}
+                done = False
+
+        if done:
+            break
+
     return results
 
 
