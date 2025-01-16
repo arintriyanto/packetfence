@@ -25,7 +25,7 @@ func CheckMachineAccountPassword(ctx context.Context, backendPort string) (bool,
 	url := "http://containers-gateway.internal:" + backendPort + "/ntlm/connect"
 
 	client := &http.Client{
-		Timeout: 5 * time.Second,
+		Timeout: 16 * time.Second,
 	}
 	response, err := client.Get(url)
 	if err != nil {
@@ -48,7 +48,7 @@ func CheckMachineAccountWithGivenPassword(ctx context.Context, backendPort strin
 	url := "http://containers-gateway.internal:" + backendPort + "/ntlm/connect"
 
 	client := &http.Client{
-		Timeout: 5 * time.Second,
+		Timeout: 16 * time.Second,
 	}
 
 	jsonData := map[string]string{
