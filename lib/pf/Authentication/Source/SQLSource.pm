@@ -54,7 +54,9 @@ sub authenticate {
    my $result = pf::password::validate_password($username, $password, 0);
 
    if ($result == $pf::password::AUTH_SUCCESS) {
-     return ($TRUE, $AUTH_SUCCESS_MSG);
+      return ($TRUE, $AUTH_SUCCESS_MSG);
+   } elsif ($result == $pf::password::AUTH_FAILED_EXPIRED) {
+      return ($FALSE, $AUTH_PASSWD_EXPIRED);
    }
 
    return ($FALSE, $AUTH_FAIL_MSG);
