@@ -108,10 +108,10 @@ sub check_if_radius_request_psk_matches {
         $pmk,
         pack("H*", $bssid),
         pack("H*", $radius_request->{"User-Name"}),
-        pack("H*", pf::util::wpa::strip_hex_prefix($radius_request->{"FreeRADIUS-802.1X-Anonce"})),
-        pf::util::wpa::snonce_from_eapol_key_frame(pack("H*", pf::util::wpa::strip_hex_prefix($radius_request->{"FreeRADIUS-802.1X-EAPoL-Key-Msg"}))),
-      ),      
-      pack("H*", pf::util::wpa::strip_hex_prefix($radius_request->{"FreeRADIUS-802.1X-EAPoL-Key-Msg"})),
+        pack("H*", sprintf("%v02x", $radius_request->{"FreeRADIUS-802.1X-Anonce"})=~ s/\.//rg),
+        pf::util::wpa::snonce_from_eapol_key_frame(pack("H*", sprintf("%v02x", $radius_request->{"FreeRADIUS-802.1X-EAPoL-Key-Msg"}) =~ s/\.//rg)),
+      ),
+      pack("H*", sprintf("%v02x", $radius_request->{"FreeRADIUS-802.1X-EAPoL-Key-Msg"}) =~ s/\.//rg),
     );
 }
 
