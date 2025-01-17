@@ -3,5 +3,5 @@
 
 jobs:
   - name: local
-    dsn: administrator:admin@tcp(127.0.0.1:6032)/
+    dsn: administrator:admin@tcp(100.64.0.1:6032)/
     autodetection_retry: 300
