@@ -69,6 +69,17 @@ use pf::SwitchSupports qw(
 # inline capabilities
 sub inlineCapabilities { return ($MAC,$SSID); }
 
+=item getVersion - obtain image version information from switch
+
+=cut
+
+sub getVersion {
+    my ($self) = @_;
+    my $logger = $self->logger;
+    $logger->info("we don't know how to determine the version through SNMP ! but it has been tested on 0.14.29676");
+    return 'i0.14.29676';
+}
+
 =item deauthenticateMacDefault
 
 De-authenticate a MAC address from wireless network (including 802.1x).
@@ -298,8 +309,6 @@ sub radiusDisconnect {
         # to ensure the VLAN is actually changed to the isolation VLAN.
         if ( $self->shouldUseCoA({role => $role}) ) {
             $logger->info("Returning ACCEPT with Role: $role");
-            
-            
             my $vsa = [
                 {
                 vendor => "Cisco",
