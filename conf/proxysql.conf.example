@@ -1,24 +1,24 @@
 #file proxysql.cfg
 
 ########################################################################################
-# This config file is parsed using libconfig , and its grammar is described in:        
-# http://www.hyperrealm.com/libconfig/libconfig_manual.html#Configuration-File-Grammar 
-# Grammar is also copied at the end of this file                                       
+# This config file is parsed using libconfig , and its grammar is described in:
+# http://www.hyperrealm.com/libconfig/libconfig_manual.html#Configuration-File-Grammar
+# Grammar is also copied at the end of this file
 ########################################################################################
 
 ########################################################################################
-# IMPORTANT INFORMATION REGARDING THIS CONFIGURATION FILE:                             
+# IMPORTANT INFORMATION REGARDING THIS CONFIGURATION FILE:
 ########################################################################################
-# On startup, ProxySQL reads its config file (if present) to determine its datadir. 
+# On startup, ProxySQL reads its config file (if present) to determine its datadir.
 # What happens next depends on if the database file (disk) is present in the defined
 # datadir (i.e. "/var/lib/proxysql/proxysql.db").
 #
-# If the database file is found, ProxySQL initializes its in-memory configuration from 
-# the persisted on-disk database. So, disk configuration gets loaded into memory and 
-# then propagated towards the runtime configuration. 
+# If the database file is found, ProxySQL initializes its in-memory configuration from
+# the persisted on-disk database. So, disk configuration gets loaded into memory and
+# then propagated towards the runtime configuration.
 #
-# If the database file is not found and a config file exists, the config file is parsed 
-# and its content is loaded into the in-memory database, to then be both saved on-disk 
+# If the database file is not found and a config file exists, the config file is parsed
+# and its content is loaded into the in-memory database, to then be both saved on-disk
 # database and loaded at runtime.
 #
 # IMPORTANT: If a database file is found, the config file is NOT parsed. In this case
@@ -26,7 +26,7 @@
 #            database ONLY. In other words, the configuration found in the proxysql.cnf
 #            file is only used to initial the on-disk database read on the first startup.
 #
-# In order to FORCE a re-initialise of the on-disk database from the configuration file 
+# In order to FORCE a re-initialise of the on-disk database from the configuration file
 # the ProxySQL service should be started with "systemctl start proxysql-initial".
 #
 ########################################################################################
@@ -36,14 +36,14 @@ errorlog="/usr/local/pf/logs/proxysql.log"
 
 admin_variables=
 {
-    admin_credentials="admin:admin"
-    mysql_ifaces="127.0.0.1:6032"
+    admin_credentials="administrator:admin"
+    mysql_ifaces="0.0.0.0:6032"
     refresh_interval=2000
     web_enabled=false
     web_port=6080
     stats_credentials="stats:admin"
 }
- 
+
 mysql_variables=
 {
     threads=4
@@ -108,12 +108,12 @@ mysql_galera_hostgroups =
     [% END %]
   [% END %]
 [% END %]
- 
+
 mysql_servers =
 (
 [% mysql_servers %]
 )
- 
+
 [% UNLESS single_server %]
 mysql_query_rules =
 (
@@ -154,7 +154,7 @@ mysql_query_rules =
     }
 )
 [% END %]
- 
+
 mysql_users =
 (
 [% mysql_users %]
