@@ -134,6 +134,26 @@ sub find_user_by_psk {
     return $pid;
 }
 
+sub check_if_radius_request_psk_matches {
+    my ($cache, $radius_request, $psk, $ssid, $bssid, $username, $anonce, $snonce, $eapol_key_frame) = @_;
+
+    my $pmk = $cache->compute(
+        "Ruckus::Unleashed::check_if_radius_request_psk_matches::PMK::$ssid+$psk",
+        {expires_in => '1 month', expires_variance => '.20'},
+        sub { pf::util::wpa::calculate_pmk($ssid, $psk) },
+    );
+
+    return pf::util::wpa::match_mic(
+      pf::util::wpa::calculate_ptk(
+        $pmk,
+        $bssid,
+        $username,
+        $anonce,
+        $snonce,
+      ),
+      $eapol_key_frame,
+    );
+}
 
 =back
 
