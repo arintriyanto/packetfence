@@ -266,7 +266,7 @@ sub identifyType {
     # are equals.
     if ( $self->isEAP ) {
         $mac =~ s/[^[:xdigit:]]//g;
-        ( lc($mac) eq lc($user_name) ) ? $self->isMacAuth($TRUE) : $self->is8021X($TRUE);
+        ( (lc($mac) eq lc($user_name)) && $eap_type != "13" ) ? $self->isMacAuth($TRUE) : $self->is8021X($TRUE);
     }
     # We can safely assume that every NoEAP connection in a RADIUS context is a mac authentication connection
     else {
