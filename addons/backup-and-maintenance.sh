@@ -205,15 +205,17 @@ backup_database(){
         else
             find $BACKUP_DIRECTORY -name "$BACKUP_DB_FILENAME-*.sql.gz" -mtime +$NB_DAYS_TO_KEEP_DB -delete
             current_filename=$BACKUP_DIRECTORY/$BACKUP_DB_FILENAME-`date +%F_%Hh%M`.sql.gz
-            echo "mysqldump --opt --routines -h $DB_HOST -u $DB_USER -p$DB_PWD $DB_NAME --ignore-table=$DB_NAME.locationlog_history --ignore-table=$DB_NAME.iplog_archive  > DB_DUMP"
-            mysqldump --opt --routines -h $DB_HOST -u $DB_USER -p$DB_PWD $DB_NAME --ignore-table=$DB_NAME.locationlog_history --ignore-table=$DB_NAME.iplog_archive  > DB_DUMP
+            mysqldump --opt --routines -h $DB_HOST -u $DB_USER -p$DB_PWD $DB_NAME  pf_version > dummy
             BACKUPRC=$?
+            if (( $BACKUPRC == 0 )); then
+                mysqldump --opt --routines -h $DB_HOST -u $DB_USER -p$DB_PWD $DB_NAME --ignore-table=$DB_NAME.locationlog_history --ignore-table=$DB_NAME.iplog_archive | gzip > ${current_filename}
+                BACKUPRC=$?
+            fi
             if (( $BACKUPRC > 0 )); then
                 echo "mysqldump returned  error code: $BACKUPRC" >&2
                 echo "mysqldump returned  error code: $BACKUPRC" > /usr/local/pf/var/backup_db.status
                 exit $BACKUPRC
             else
-                echo $DB_DUMP | gzip -c > ${current_filename}
                 echo "mysqldump completed"
                 touch /usr/local/pf/var/run/last_backup
                 echo "OK" > /usr/local/pf/var/backup_db.status
