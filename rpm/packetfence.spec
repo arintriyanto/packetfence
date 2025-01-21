@@ -495,6 +495,7 @@ cp -r addons/watchdog/ %{buildroot}/usr/local/pf/addons/
 cp -r addons/AD/* %{buildroot}/usr/local/pf/addons/AD/
 cp -r addons/monit/ %{buildroot}/usr/local/pf/addons/
 cp -r addons/stress-tester/ %{buildroot}/usr/local/pf/addons/
+cp -r addons/ntlm-auth-api/ %{buildroot}/usr/local/pf/addons/
 cp addons/full-import/*.sh %{buildroot}/usr/local/pf/addons/full-import/
 cp addons/full-import/*.pl %{buildroot}/usr/local/pf/addons/full-import/
 cp addons/functions/*.functions %{buildroot}/usr/local/pf/addons/functions/
@@ -910,6 +911,8 @@ fi
                         /usr/local/pf/addons/monit/*
 %dir                    /usr/local/pf/addons/packages
                         /usr/local/pf/addons/packages/*
+%dir                    /usr/local/pf/addons/ntlm-auth-api
+                        /usr/local/pf/addons/ntlm-auth-api/*
 %dir                    /usr/local/pf/addons/pfconfig
 %exclude                /usr/local/pf/addons/pfconfig/pfconfig.init
 %dir                    /usr/local/pf/addons/pfconfig/comparator
