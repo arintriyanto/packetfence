@@ -164,6 +164,10 @@ sub create {
         $real_computer_name = $s[0];
     }
 
+    if (length($real_computer_name) > 19) {
+        return $self->render_error(422, "Invalid machine account length, maximum 20 characters (including ending\$ sign)")
+    }
+
     my $ad_server_host = "";
     my $ad_server_ip = "";
 
@@ -193,9 +197,12 @@ sub create {
     }
 
     if (!is_nt_hash_pattern($computer_password)) {
-        my @real_computer_names =($real_computer_name);
-        if ($additional_machine_accounts +0 > 0) {
-            for my $i (0..$additional_machine_accounts) {
+        my @real_computer_names = ($real_computer_name);
+        if ($additional_machine_accounts + 0 > 0) {
+            for my $i (0 .. $additional_machine_accounts - 1) {
+                if (length("$real_computer_name-$i") > 19) {
+                    return $self->render_error(422, "In order to create additional machine accounts, the base computer account is limited to maximum 16 characters. currently using '$real_computer_name', " + length($real_computer_name), " characters.")
+                }
                 push(@real_computer_names, "$real_computer_name-$i");
             }
         }
@@ -282,6 +289,10 @@ sub update {
         $real_computer_name = $s[0];
     }
 
+    if (length($real_computer_name) > 19) {
+        return $self->render_error(422, "Invalid machine account length, maximum 20 characters (including ending\$ sign)")
+    }
+
     my $ad_server_host = "";
     my $ad_server_ip = "";
 
@@ -312,14 +323,17 @@ sub update {
 
     my @real_computer_names = ($real_computer_name);
 
-    if ($additional_machine_accounts +0 > 0) {
-        for my $i (0..$additional_machine_accounts) {
+    if ($additional_machine_accounts + 0 > 0) {
+        for my $i (0 .. $additional_machine_accounts - 1) {
+            if (length("$real_computer_name-$i") > 19) {
+                return $self->render_error(422, "In order to create additional machine accounts, the base computer account is limited to maximum 16 characters. currently using '$real_computer_name', " + length($real_computer_name), " characters.")
+            }
             push(@real_computer_names, "$real_computer_name-$i");
         }
     }
     for (my $i = 0; $i < @real_computer_names; $i++) {
         $real_computer_name = $real_computer_names[$i];
-        if (!is_nt_hash_pattern($new_data->{machine_account_password}) && ($new_data->{machine_account_password} ne $old_item->{machine_account_password})) {
+        if (!is_nt_hash_pattern($new_data->{machine_account_password})) {
             my ($add_status, $add_result) = pf::domain::add_computer("-delete", $real_computer_name, $computer_password, $ad_server_ip, $ad_server_host, $dns_name, $workgroup, $ou, $bind_dn, $bind_pass);
             if ($add_status == $FALSE) {
                 unless ($add_result =~ /Account (.+) not found in/) {
@@ -341,7 +355,6 @@ sub update {
             $new_data->{ou} = $old_item->{ou}
         }
     }
-
 
     $new_data->{server_name} = $computer_name;
     delete $new_data->{id};
