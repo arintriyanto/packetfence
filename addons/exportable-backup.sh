@@ -170,12 +170,12 @@ create_backup_directory
 if check_disk_space; then
     /bin/bash /usr/local/pf/addons/backup-and-maintenance.sh
     BACKUPRC=$?
-    if (( $BACKUPRC > 0 )); then
+    if (( $BACKUPRC == 0 )); then
         /bin/bash /usr/local/pf/addons/full-import/export.sh $BACKUP_FILE
         BACKUPRC=$?
     fi
     clean_backup
-    if [ -f $BACKUP_FILE ]; then
+    if (( $BACKUPRC == 0 )); then
         echo "Exportable backup is done"
         if [ $do_replication == 1 ]; then
             replicate_backup
