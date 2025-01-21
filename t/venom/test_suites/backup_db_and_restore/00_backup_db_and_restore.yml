@@ -20,12 +20,12 @@ testcases:
       assertions:
         - result.statuscode ShouldEqual 201
 
-- name: remove PUBLIC user from mysql.user
+- name: remove_PUBLIC_user_from_mysql.user
   steps:
   - type: exec
     script: "mysql -e'DELETE FROM mysql.user WHERE User=\"PUBLIC\"';"
 
-- name: create exportable backup
+- name: create_exportable_backup
   steps:
   - type: exec
     script: /usr/local/pf/addons/exportable-backup.sh
@@ -37,7 +37,19 @@ testcases:
     assertions:
       - result.systemout ShouldNotBeEmpty
 
-- name: import
+- name: delete_user_in_db
+  steps:
+  - type: http
+    method: DELETE
+    url: '{{.pfserver_webadmin_url}}/api/v1/user/{{.backup_db_and_restore.user}}'
+    ignore_verify_ssl: true
+    headers:
+      "Authorization": "{{.get_login_token.result.token}}"
+      "Content-Type": "application/json"
+    assertions:
+      - result.statuscode ShouldEqual 200
+
+- name: import_previous_exportation
   steps:
   - type: exec
     script: '/usr/local/pf/addons/full-import/import.sh --db-restore -f {{.get_backup_name.result.systemout}}'

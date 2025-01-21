@@ -6,8 +6,9 @@ MariaDB running and available using UNIX socket
 ## Scenario steps
 1. Create user in DB using API
 2. Backup files and DB with exportable-backup script
-7. Import only db from backup
-8. Check that user created at first step is still here using API: validate
+3. Delete user in DB using API
+4. Import only db from backup
+5. Check that user created at first step is still here using API: validate
    that application is running after DB restore
 
 ## Teardown steps
