@@ -127,6 +127,23 @@ sub returnRadiusAccessAccept {
     return [$status, %$radius_reply_ref];
 }
 
+=head2 generate_dpsk_attribute_value
+
+Generates the RADIUS attribute value for Ruckus-DPSK given an SSID name and the passphrase
+
+=cut
+
+sub generate_dpsk_attribute_value {
+    my ($self, $ssid, $dpsk) = @_;
+
+    my $pbkdf2 = Crypt::PBKDF2->new(
+        iterations => 4096,
+        output_len => 32,
+    );
+
+    my $hash = $pbkdf2->PBKDF2_hex($ssid, $dpsk);
+    return "0x".$hash;
+}
 
 sub find_user_by_psk {
     my ($self, $radius_request, $args) = @_;
