@@ -287,13 +287,14 @@ sub returnRadiusAccessAccept {
     my $logger = $self->logger;
 
     $args->{'unfiltered'} = $TRUE;
+    $self->compute_action(\$args);
     my @super_reply = @{$self->SUPER::returnRadiusAccessAccept($args)};
     my $status = shift @super_reply;
     my %radius_reply = @super_reply;
     my $radius_reply_ref = \%radius_reply;
     return [$status, %$radius_reply_ref] if($status == $RADIUS::RLM_MODULE_USERLOCK);
 
-    if ($args->{profile}->dpskEnabled()) {
+    if ($args->{profile}->dpskEnabled() && $args->{'compute_dpsk'}) {
         if (defined($args->{owner}->{psk})) {
             $radius_reply_ref->{"Ruckus-DPSK"} = $self->generate_dpsk_attribute_value($args->{ssid}, $args->{owner}->{psk});
         } else {

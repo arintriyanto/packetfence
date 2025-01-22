@@ -93,6 +93,39 @@ sub getAcceptForm {
     return $html_form;
 }
 
+=item returnRadiusAccessAccept
+
+Prepares the RADIUS Access-Accept reponse for the network device.
+Overrides the default implementation to add the dynamic PSK
+
+=cut
+
+sub returnRadiusAccessAccept {
+    my ($self, $args) = @_;
+    my $logger = $self->logger;
+
+    $args->{'unfiltered'} = $TRUE;
+    $args->{'compute_dpsk'} = $FALSE;
+    $self->compute_action(\$args);
+    my @super_reply = @{$self->SUPER::returnRadiusAccessAccept($args)};
+    my $status = shift @super_reply;
+    my %radius_reply = @super_reply;
+    my $radius_reply_ref = \%radius_reply;
+    return [$status, %$radius_reply_ref] if($status == $RADIUS::RLM_MODULE_USERLOCK);
+
+    if ($args->{profile}->dpskEnabled()) {
+        if (defined($args->{owner}->{psk})) {
+            $radius_reply_ref->{"MS-MPPE-Recv-Key"} = $self->generate_dpsk_attribute_value($args->{ssid}, $args->{owner}->{psk});
+        } else {
+            $radius_reply_ref->{"MS-MPPE-Recv-Key"} = $self->generate_dpsk_attribute_value($args->{ssid}, $args->{profile}->{_default_psk_key});
+        }
+    }
+
+    my $filter = pf::access_filter::radius->new;
+    my $rule = $filter->test('returnRadiusAccessAccept', $args);
+    ($radius_reply_ref, $status) = $filter->handleAnswerInRule($rule,$args,$radius_reply_ref);
+    return [$status, %$radius_reply_ref];
+}
 
 
 sub find_user_by_psk {
