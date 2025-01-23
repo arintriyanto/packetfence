@@ -25,6 +25,10 @@ BEGIN {
 use Test::More tests => 10;
 use Test::Mojo;
 use Mojo::JSON qw(decode_json);
+use Utils;
+use pf::ConfigStore::Pf;
+
+my ($fh, $filename) = Utils::tempfileForConfigStore("pf::ConfigStore::Pf");
 
 #This test will running last
 use Test::NoWarnings;
