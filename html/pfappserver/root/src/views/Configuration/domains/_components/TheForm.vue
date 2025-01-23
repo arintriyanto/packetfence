@@ -29,7 +29,7 @@
         />
 
         <form-group-additional-machine-accounts namespace="additional_machine_accounts"
-                                :column-label="$i18n.t(`How many additional machine accounts should be created and used`)"
+                                :column-label="$i18n.t(`Additional machine accounts`)"
                                 :text="$i18n.t(`Additional machine accounts should be created and used to parallel NTLM authentication. PacketFence will use the original machine account name and a short suffix to build the additional machine accounts. E.g. 'primary-1' 'primary-2' if your primiary machine account is set to 'primary'`)"
         />
 

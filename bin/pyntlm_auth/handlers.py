@@ -15,6 +15,7 @@ import ms_event
 import ncache
 import redis_client
 import rpc
+import log
 
 
 # For NTSTATUS, see:
@@ -47,13 +48,18 @@ def ping_handler():
 
 def ntlm_connect_handler():
     machine_accounts = config_loader.expand_machine_account_list()
+    log.debug(f"machine account expanded: {machine_accounts}")
 
     mapping, code, msg = _build_machine_account_bind_mapping(machine_accounts)
+    log.debug(f"machine account binding done, e = {code}, m = {msg}, r = {mapping}")
     if code != 0:
+        log.warning(f"failed retrieving machine account binding: e = {code}, m = {msg}")
         return msg, code
 
     job_id, code, msg = _submit_machine_account_test_job(machine_accounts)
+    log.debug(f"submitted machine account test job, e = {code}, m = {msg}, job_id = {job_id}")
     if code != 0:
+        log.warning(f"failed submitting machine account test job: e = {code}, m = {msg}")
         return msg, code
 
     results = _poll_machine_account_test_job_results(job_id, machine_accounts)
