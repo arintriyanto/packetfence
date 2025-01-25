@@ -6,6 +6,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -148,7 +149,7 @@ func (c *Client) Notify(ctx context.Context, method string, args interface{}) er
 		return err
 	}
 
-	_, err = ioutil.ReadAll(resp.Body)
+	_, err = io.ReadAll(resp.Body)
 	resp.Body.Close()
 	return nil
 }
