@@ -1557,7 +1557,7 @@ Update the firewall sso based on radius accounting
 
 sub firewallsso_accounting : Public {
     my ($class, %RAD_REQUEST) = @_;
-    if ($RAD_REQUEST{'Calling-Station-Id'} && $RAD_REQUEST{'Framed-IP-Address'} && scalar keys %pf::config::ConfigFirewallSSO != 0 && (grep { $_ eq $pf::config::TRUE } map { $_->{'sso_on_accounting'} } values %pf::config::ConfigFirewallSSO) ) {
+    if ($RAD_REQUEST{'Calling-Station-Id'} && $RAD_REQUEST{'Framed-IP-Address'} && (grep { pf::util::isenabled($_) } map { $_->{'sso_on_accounting'} } values %pf::config::ConfigFirewallSSO) ) {
         my $mac = pf::util::clean_mac($RAD_REQUEST{'Calling-Station-Id'});
         my $node = pf::node::node_attributes($mac);
         my $ip = $RAD_REQUEST{'Framed-IP-Address'};
