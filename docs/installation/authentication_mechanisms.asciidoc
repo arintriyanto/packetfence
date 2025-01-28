@@ -486,7 +486,7 @@ Define a name and create:
 
 image::azure_saml_app_name.png[scaledwidth="100%",alt="Azure SAML Application Name"]
 
-Once the applicate have been created click on Single sign-on
+Once the application has been created click on Single sign-on
 
 image::azure_saml_sso.png[scaledwidth="100%",alt="Azure SAML SSO"]
 
