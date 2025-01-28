@@ -25,6 +25,7 @@ use strict;
 use warnings;
 
 use List::MoreUtils qw(none);
+use List::Util qw(any);
 use pf::log;
 
 BEGIN {
@@ -90,7 +91,7 @@ sub reevaluate_access {
     $opts{'force'} = '1' if ($function eq 'admin_modify');
     my $ip = pf::ip4log::mac2ip($mac);
     my $sync = $opts{sync};
-    if ( (grep { pf::util::isenabled($_) } map { $_->{'sso_on_access_reevaluation'} } values %ConfigFirewallSSO) ) {
+    if ( any { pf::util::isenabled($_->{'sso_on_access_reevaluation'}) } values %ConfigFirewallSSO ) {
         my $node = node_attributes($mac);
         if ($ip) {
             my $firewallsso_method = ( $node->{status} eq $STATUS_REGISTERED ) ? "Update" : "Stop";
