@@ -34,6 +34,7 @@ use pf::error qw(is_error);
 use pf::ConfigStore::Pf;
 use pf::ConfigStore::Network;
 use pfappserver::Model::Config::Pfconfig;
+use pf::config::crypt;
 use pf::config qw(
     %Config
     %Doc_Config
@@ -282,6 +283,7 @@ sub test_smtp {
     }
 
     my $alerting_config = $form->value;
+    $alerting_config->{smtp_password} = pf::config::crypt::pf_decrypt($alerting_config->{smtp_password});
     my $email = $json->{'test_emailaddr'} || $alerting_config->{emailaddr};
     my $msg = MIME::Lite->new(
         To => $email,
