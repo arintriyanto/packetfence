@@ -39,7 +39,7 @@
             <div class="p-3">
               <small class="text-muted">{{ host }}</small>
               <div class="mt-2">
-                <chart :definition="{ ...showChart, height: `${Math.max(25, 80 / Object.keys(cluster).length)}vh` }" :host="`/netdata/${management_ip}`" :data-colors="palette(0)"
+                <chart :definition="{ ...showChart, height: `${Math.max(20, 75 / Object.keys(cluster).length)}vh` }" :host="`/netdata/${management_ip}`" :data-colors="palette(0)"
                   :data-common-max="showChart.metric" :data-common-units="showChart.metric" :data-after="-showAfter" />
               </div>
             </div>
@@ -85,7 +85,7 @@
         </b-col>
       </b-row>
 
-    <b-tabs nav-class="nav-fill" v-model="tabIndex" lazy :key="$i18n.locale">
+    <b-tabs nav-class="nav-fill" v-model="tabIndex" lazy :key="`${host}-${$i18n.locale}`">
       <b-tab v-for="(section, sectionIndex) in filteredSections" :title="$i18n.t(section.name)" :key="`${section.name}-${sectionIndex}-${showAfter}`">
         <template v-for="(group, groupIndex) in section.groups">
           <!-- Named groups are rendered inside a card -->
@@ -143,7 +143,7 @@ const setup = (props, context) => {
 
   const ip = computed(() => {
     Object.values(cluster.value).map(({ host: _host, management_ip }) => {
-      if(_host === host) return management_ip
+      if(_host === host.value) return management_ip
     })
     const { 0: { management_ip = '127.0.0.1' } = {} } = Object.values(cluster.value)
     return management_ip

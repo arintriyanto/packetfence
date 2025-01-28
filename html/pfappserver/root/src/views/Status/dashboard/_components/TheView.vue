@@ -17,7 +17,7 @@
             <!-- Named groups are rendered inside a card -->
             <component :is="group.name ? 'b-card' : 'div'" class="mt-3" :key="`${group.name}-${groupIndex}`" :title="$i18n.t(group.name)">
               <b-row align-h="center">
-                <b-col class="mt-3 chart" v-for="chart in group.items" :key="chart.metric" :md="cols(chart.cols, group.items.length)">
+                <b-col class="mt-3 chart" v-for="(chart, chartIndex) in group.items" :key="`${chartIndex}-${chart.metric}`" :md="cols(chart.cols, group.items.length)">
                   <small class="text-muted cursor-pointer pb-3">
                     {{ chart.title }}
                   </small>
