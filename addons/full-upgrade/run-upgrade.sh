@@ -233,7 +233,12 @@ echo "Stopping the PacketFence services"
 main_splitter
 export_to="/root/packetfence-pre-upgrade-backup-`date '+%s'`.tgz"
 echo "Generating full pre-upgrade backup to $export_to"
-/usr/local/pf/addons/exportable-backup.sh -f $export_to
+if [ -f /usr/local/pf/addons/exportable-backup.sh ]; then
+  /usr/local/pf/addons/exportable-backup.sh -f $export_to
+else
+  /usr/local/pf/addons/backup-and-maintenance.sh
+  /usr/local/pf/addons/full-import/export.sh $export_to
+fi
 
 main_splitter
 INCLUDE_OS_UPDATE="${INCLUDE_OS_UPDATE:-}"
