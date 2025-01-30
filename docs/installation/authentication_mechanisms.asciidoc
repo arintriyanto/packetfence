@@ -61,6 +61,7 @@ NOTE: If you are using PacketFence in cluster mode, you must save the domain set
 
 NOTE: after version 14.0, the PacketFence domain.conf will be updated, domain identifier is changed from previously single identifier to "hostname + identifier". If you are running PacketFence in a cluster, please check the corresponding sections for each node.
 
+[#_domain_joining_on_a_packetfence_cluster_v14_x]
 ==== Domain Joining on A PacketFence cluster (v14.x)
 
 We've updated the structure of `domain.conf` file since v14.0,

@@ -492,4 +492,5 @@ If you already use VRRP protocol on your network, you can also change the defaul
 ==== Domain join
 
 Next, make sure to join domains through _Configuration -> Policies And Access Control -> Domains -> Active Directory Domains_ on *each node*.
+Please refer to <<PacketFence_Installation_Guide.asciidoc#_domain_joining_on_a_packetfence_cluster_v14_x, Domain joining on a PacketFence cluster v14.x>> for detailed steps.
 
