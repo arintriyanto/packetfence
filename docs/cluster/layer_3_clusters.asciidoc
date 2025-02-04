@@ -411,12 +411,16 @@ And we MUST defined the type and the enforcement on all the interfaces.
 
 ==== Prepare and start the master/slave replication
 
-In order to setup the master a recent backup is required. Backups created prior to the inclusion of this feature will not work. Recent backups now include the replication runtime position of the binary logfile.
+In order to setup the master a recent backup is required. Backups created prior to the inclusion
+of this feature will not work. Recent backups now include the replication runtime position of the binary logfile.
 First restart packetfence-mariadb on all of the servers in the main cluster.
 
  systemctl restart packetfence-mariadb
 
-Run the /usr/local/pf/addons/exportable-backup.sh script on the master node of the main cluster. If you do not know which server is the master run this command on all nodes in the main cluster and only the master will create a backup file (eg: /root/backup/packetfence-exportable-backup-YYYY-MM-DD_HHhss.tgz).
+Run the /usr/local/pf/addons/exportable-backup.sh script on the master node of the main cluster. If you do not know which server is
+the master, run this command on all nodes in the main cluster and, thanks to the database backup size,
+the master will have the bigger backup file (eg: /root/backup/packetfence-exportable-backup-YYYY-MM-DD_HHhss.tgz)
+that contains files and database.
 Transfer this file to the remote server (eg: /root/backup/)
 
 Connect to the remote server and perform the following to sync the configuration from the master cluster:
